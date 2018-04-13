@@ -1,120 +1,107 @@
-/* ADT for Queue*/
-#include <stdio.h>
+//
+//  Header.h
+//  Queue
+//
+//  Created by Umid Negmatullayev on 4/13/18.
+//  Copyright © 2018 Umid Negmatullayev. All rights reserved.
+//
+#ifndef Header_h
+#define Header_h
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
 
-typedef struct node{
-    void* dataPtr;
-    struct node* next;
-}QUEUE_NODE;
 
+// declaring the QUEUE_NODE
+typedef struct NODE{
+    void* data;
+    struct NODE* next;
+}NODE;
+
+// declaring the QUEUE
 typedef struct {
-    QUEUE_NODE* front;
-    QUEUE_NODE* rear;
-    int count;
+    NODE* front;
+    NODE* rear;
+    int cnt;
 }QUEUE;
 
-// Prototype declarations
-QUEUE* createQueue (void);
-QUEUE* destroyQueue (QUEUE* queue);
-
-bool dequeue (QUEUE* queue, void** itemPtr);
-bool enqueue (QUEUE* queue, void* itemPtr);
-int queueCount (QUEUE* queue);
-
-bool emptyQueue (QUEUE* queue);
-
-
-void display(QUEUE* queue);
-// End of Queue ADT Definitions
-
-
-/* ===== createQueue =====*/
-
-QUEUE* createQueue(void){
-    // Local Definitions
+// initializing the QUEUE
+QUEUE* creatingQueue(){
     QUEUE* queue;
+    queue = (QUEUE*)malloc(sizeof(QUEUE));
     
-    // Statements
-    queue = (QUEUE*) malloc (sizeof(QUEUE));
     if(queue){
-        queue->front = NULL;
+        queue->front=NULL;
         queue->rear = NULL;
-        queue->count = 0;
-    } // if
+        queue->cnt=0;
+    }
     return queue;
-} // createQueue
+}
 
-/*===== enqueue =====*/
-bool enqueue(QUEUE* queue, void* itemPtr){
-    // Local Definitions
-    QUEUE_NODE* newPtr;
+// function prototypes
+bool isEmpty(QUEUE*);
+bool dequeue(QUEUE* queue, void** dataPtr);
+bool enqueue(QUEUE* queue, void* data);
+bool isEmpty(QUEUE* queue);
+
+
+// enqueueu
+bool enqueue(QUEUE* queue, void* data){
+    NODE* node;
     
-    // Statements
-    if(!(newPtr = (QUEUE_NODE*) malloc (sizeof(QUEUE_NODE)))){
+    // allocating storage for node
+    node = (NODE*)malloc(sizeof(NODE));
+    
+    // checking if node created in the heap
+    if(!node){
         return false;
     }
     
-    newPtr->dataPtr = itemPtr;
-    newPtr->next = NULL;
+    // assigning usr data to node data
+    node->data=data;
+    node->next=NULL;
     
-    if(queue->count == 0){
-        // Inserting into null queue
-        queue->front = newPtr;
-    }else{
-        queue->rear->next = newPtr;
-    }
+    // if queue is empty we assign both front and rear to the node
+    if(queue->cnt==0)
+        queue->front=node;
     
-    (queue->count)++;
-    queue->rear = newPtr;
+    // if queue is not empty we just assign rear->next to node
+    else
+        queue->rear->next=node;
+    
+    
+    // in any case we need to upgade count and we shift rear to next node
+    (queue->cnt)++;
+    queue->rear=node;
     return true;
-} // enqueue
+}
 
-
-/* ===== dequeue =====*/
-bool dequeue (QUEUE* queue, void** itemPtr){
-    // Local Definitions
-    QUEUE_NODE* deleteLoc;
+bool dequeue(QUEUE* queue, void** dataPtr){
+    NODE* temp=NULL;
     
-    // Statements
-    if(!queue->count){
+    if(!isEmpty(queue)){
+        *dataPtr = queue->front->data;
+        temp = queue->front;
+    }else{
         return false;
     }
-    *itemPtr = queue->front->dataPtr;
-    deleteLoc = queue->front;
-    if(queue->count==1){
-        // Deleting only item in queue
-        queue->rear = queue->front = NULL;
+    if(queue->cnt==1){
+        queue->rear=queue->front=NULL;
     }else{
-        queue->front= queue->front->next;
+        queue->front=queue->front->next;
     }
-    (queue->count)--;
-    free(deleteLoc);
+    
+    (queue->cnt)--;
+    free(temp);
     
     return true;
-} // dequeue
+}
 
 
-/*===== emptyQueue =====*/
-bool emptyQueue(QUEUE* queue){
-    // Statements
-    return (queue->count==0);
-} // emptyQueue
-
-
-/*===== display =====*/
-void display(QUEUE* queue){
-    QUEUE_NODE* temp;
-    if(emptyQueue(queue)){
-        printf("Nothing to display!!");
-    }
-    temp=queue->front;
-    int sum =(int)temp->dataPtr;
-    while(temp!=NULL){
-        printf("%i \t", sum);
-        temp=temp->next;
-    }
-    
+bool isEmpty(QUEUE* queue){
+    if(queue->cnt==0)
+        return true;
+    return false;
 }
 
 
@@ -123,6 +110,5 @@ void display(QUEUE* queue){
 
 
 
-
-
+#endif /* Header_h */
 
