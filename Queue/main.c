@@ -3,35 +3,48 @@
 
 void display(QUEUE* queue);
 
-int main(){
-    int choice,item;
+int main() {
+    int choice, item;
     int *data;
     QUEUE* categ;
-    categ  = creatingQueue();
+    categ = createQueue();
     
-    while(1){
+    while (1) {
         printf("\n 1.Enqueue: \n");
         printf("\n 2.Dequeue: \n");
-        printf("\n 3.Display: \n");
-        printf("\n 4.Exit: \n");
+        printf("\n 3.peekRear: \n");
+        printf("\n 4.peekFront: \n");
+        printf("\n 5.Display: \n");
+        printf("\n 6.Exit: \n");
         
-        scanf("\n%i",&choice);
+        scanf_s("\n%i", &choice);
         
         switch (choice) {
             case 1:
-                scanf("%i", &item);
+                scanf_s("%i", &item);
+                
                 data = (int*)malloc(sizeof(int));
                 *data = item;
+                
                 enqueue(categ, data);
                 break;
             case 2:
                 dequeue(categ, (void*)&item);
                 break;
             case 3:
-                display(categ);
+                peekRear(categ, (void*)&data);
+                printf("%i\n", *data);
                 break;
             case 4:
+                peekFront(categ, (void*)&data);
+                printf("%i\n", *data);
+                break;
+            case 5:
+                display(categ);
+                break;
+            case 6:
                 exit(0);
+                break;
             default:
                 break;
         }
@@ -40,11 +53,12 @@ int main(){
     return 0;
 }
 
-void display(QUEUE* queue){
-    static int* dataPtr;
+void display(QUEUE* queue) {
+    int* dataPtr;
     
-    while(!isEmpty(queue)){
+    while (!isEmpty(queue)) {
         dequeue(queue, (void*)&dataPtr);
-        printf("%i\t",*dataPtr);
+        printf("%i\t", *dataPtr);
     }
 }
+
